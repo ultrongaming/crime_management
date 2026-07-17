@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Edit Case{% endblock %}
+{% block content %}
+<div class="topbar">
+  <div>
+    <h1>Edit Case <span class="mono" style="color:var(--text-faint); font-size:16px;">{{ case.case_number }}</span></h1>
+  </div>
+</div>
+
+<form class="card" method="POST">
+  <div class="form-grid">
+    <div class="field full">
+      <label for="title">Case title</label>
+      <input type="text" id="title" name="title" value="{{ case.title }}" required>
+    </div>
+    <div class="field">
+      <label for="crime_type">Crime type</label>
+      <input type="text" id="crime_type" name="crime_type" value="{{ case.crime_type }}" required>
+    </div>
+    <div class="field">
+      <label for="location">Location</label>
+      <input type="text" id="location" name="location" value="{{ case.location or '' }}">
+    </div>
+    <div class="field">
+      <label for="priority">Priority</label>
+      <select id="priority" name="priority">
+        {% for p in ['Low','Medium','High','Critical'] %}
+        <option {{ 'selected' if case.priority == p }}>{{ p }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="status">Status</label>
+      <select id="status" name="status">
+        {% for s in ['Open','Under Investigation','Closed','Cold'] %}
+        <option {{ 'selected' if case.status == s }}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="officer_id">Assigned officer</label>
+      <select id="officer_id" name="officer_id">
+        <option value="">Unassigned</option>
+        {% for o in officers %}
+        <option value="{{ o.id }}" {{ 'selected' if case.officer_id == o.id }}>{{ o.full_name }} — {{ o.department }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="criminal_id">Linked record</label>
+      <select id="criminal_id" name="criminal_id">
+        <option value="">None</option>
+        {% for cr in criminals %}
+        <option value="{{ cr.id }}" {{ 'selected' if case.criminal_id == cr.id }}>{{ cr.full_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field full">
+      <label for="description">Description</label>
+      <textarea id="description" name="description">{{ case.description or '' }}</textarea>
+    </div>
+  </div>
+  <div style="display:flex; gap:10px; margin-top:6px;">
+    <button class="btn btn-primary" type="submit">Save changes</button>
+    <a class="btn btn-ghost" href="{{ url_for('case_detail', case_id=case.id) }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

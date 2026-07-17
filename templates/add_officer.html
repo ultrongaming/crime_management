@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}New Officer{% endblock %}
+{% block content %}
+<div class="topbar">
+  <div><h1>New Officer Account</h1></div>
+</div>
+
+<form class="card" method="POST">
+  <div class="form-grid">
+    <div class="field">
+      <label for="full_name">Full name</label>
+      <input type="text" id="full_name" name="full_name" required>
+    </div>
+    <div class="field">
+      <label for="badge_no">Badge number</label>
+      <input type="text" id="badge_no" name="badge_no" placeholder="e.g. OFC-312" required>
+    </div>
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required>
+    </div>
+    <div class="field">
+      <label for="password">Temporary password</label>
+      <input type="password" id="password" name="password" required>
+    </div>
+    <div class="field">
+      <label for="department">Department</label>
+      <input type="text" id="department" name="department" value="General Investigation">
+    </div>
+    <div class="field">
+      <label for="role">Role</label>
+      <select id="role" name="role">
+        <option value="officer" selected>Officer</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+  </div>
+  <div style="display:flex; gap:10px; margin-top:6px;">
+    <button class="btn btn-primary" type="submit">Create account</button>
+    <a class="btn btn-ghost" href="{{ url_for('officers') }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

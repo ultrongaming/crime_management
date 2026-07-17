@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Records{% endblock %}
+{% block content %}
+<div class="topbar">
+  <div>
+    <h1>Individual Records</h1>
+    <div class="desc">{{ criminals|length }} record{{ '' if criminals|length == 1 else 's' }} on file.</div>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('new_criminal') }}">+ New record</a>
+</div>
+
+<form class="toolbar" method="GET">
+  <input type="text" name="q" placeholder="Search name or address…" value="{{ q }}">
+  <button class="btn" type="submit">Search</button>
+  {% if q %}<a class="btn btn-ghost" href="{{ url_for('criminals') }}">Clear</a>{% endif %}
+</form>
+
+<div class="card" style="padding:0;">
+  {% if criminals %}
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Age</th><th>Gender</th><th>Address</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      {% for cr in criminals %}
+      <tr class="row-link" onclick="location.href='{{ url_for('criminal_detail', criminal_id=cr.id) }}'">
+        <td>{{ cr.full_name }}</td>
+        <td>{{ cr.age or '—' }}</td>
+        <td>{{ cr.gender or '—' }}</td>
+        <td>{{ cr.address or '—' }}</td>
+        <td><span class="stamp stamp-{{ cr.status|lower|replace(' ', '-') }}">{{ cr.status }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">
+    <div class="big">No matching records</div>
+    Try a different search term or create a new record.
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}New Record{% endblock %}
+{% block content %}
+<div class="topbar">
+  <div>
+    <h1>New Individual Record</h1>
+  </div>
+</div>
+
+<form class="card" method="POST">
+  <div class="form-grid">
+    <div class="field full">
+      <label for="full_name">Full name</label>
+      <input type="text" id="full_name" name="full_name" required>
+    </div>
+    <div class="field">
+      <label for="age">Age</label>
+      <input type="number" id="age" name="age" min="0" max="120">
+    </div>
+    <div class="field">
+      <label for="gender">Gender</label>
+      <select id="gender" name="gender">
+        <option value="">Unspecified</option>
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="status">Status</label>
+      <select id="status" name="status">
+        <option selected>Wanted</option>
+        <option>In Custody</option>
+        <option>Released</option>
+        <option>Convicted</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="address">Last known address</label>
+      <input type="text" id="address" name="address">
+    </div>
+    <div class="field full">
+      <label for="identifying_marks">Identifying marks / notes</label>
+      <textarea id="identifying_marks" name="identifying_marks" placeholder="Scars, tattoos, aliases…"></textarea>
+    </div>
+  </div>
+  <div style="display:flex; gap:10px; margin-top:6px;">
+    <button class="btn btn-primary" type="submit">Save record</button>
+    <a class="btn btn-ghost" href="{{ url_for('criminals') }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

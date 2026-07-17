@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Edit Record{% endblock %}
+{% block content %}
+<div class="topbar">
+  <div><h1>Edit Record</h1></div>
+</div>
+
+<form class="card" method="POST">
+  <div class="form-grid">
+    <div class="field full">
+      <label for="full_name">Full name</label>
+      <input type="text" id="full_name" name="full_name" value="{{ criminal.full_name }}" required>
+    </div>
+    <div class="field">
+      <label for="age">Age</label>
+      <input type="number" id="age" name="age" min="0" max="120" value="{{ criminal.age or '' }}">
+    </div>
+    <div class="field">
+      <label for="gender">Gender</label>
+      <select id="gender" name="gender">
+        <option value="" {{ 'selected' if not criminal.gender }}>Unspecified</option>
+        {% for g in ['Male','Female','Other'] %}
+        <option {{ 'selected' if criminal.gender == g }}>{{ g }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="status">Status</label>
+      <select id="status" name="status">
+        {% for s in ['Wanted','In Custody','Released','Convicted'] %}
+        <option {{ 'selected' if criminal.status == s }}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="address">Last known address</label>
+      <input type="text" id="address" name="address" value="{{ criminal.address or '' }}">
+    </div>
+    <div class="field full">
+      <label for="identifying_marks">Identifying marks / notes</label>
+      <textarea id="identifying_marks" name="identifying_marks">{{ criminal.identifying_marks or '' }}</textarea>
+    </div>
+  </div>
+  <div style="display:flex; gap:10px; margin-top:6px;">
+    <button class="btn btn-primary" type="submit">Save changes</button>
+    <a class="btn btn-ghost" href="{{ url_for('criminal_detail', criminal_id=criminal.id) }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

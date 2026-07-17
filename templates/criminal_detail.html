@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ criminal.full_name }}{% endblock %}
+{% block content %}
+<div class="detail-head">
+  <div>
+    <div class="eyebrow">Individual record</div>
+    <h1>{{ criminal.full_name }}</h1>
+    <span class="stamp stamp-{{ criminal.status|slug }}">{{ criminal.status }}</span>
+  </div>
+  <div style="display:flex; gap:10px;">
+    <a class="btn" href="{{ url_for('edit_criminal', criminal_id=criminal.id) }}">Edit record</a>
+    <form method="POST" action="{{ url_for('delete_criminal', criminal_id=criminal.id) }}" onsubmit="return confirm('Delete this record permanently?');">
+      <button class="btn btn-danger" type="submit">Delete</button>
+    </form>
+  </div>
+</div>
+
+<div class="detail-grid">
+  <div class="card">
+    <div class="eyebrow" style="margin-bottom:10px;">Details</div>
+    <div class="meta-list">
+      <div><div class="k">Age</div><div class="v">{{ criminal.age or '—' }}</div></div>
+      <div><div class="k">Gender</div><div class="v">{{ criminal.gender or '—' }}</div></div>
+      <div class="full" style="grid-column:1/-1;"><div class="k">Last known address</div><div class="v">{{ criminal.address or '—' }}</div></div>
+      <div class="full" style="grid-column:1/-1;"><div class="k">Identifying marks / notes</div><div class="v">{{ criminal.identifying_marks or 'None on file.' }}</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="eyebrow" style="margin-bottom:10px;">Linked cases</div>
+    {% if cases %}
+      {% for c in cases %}
+      <div class="note" style="cursor:pointer;" onclick="location.href='{{ url_for('case_detail', case_id=c.id) }}'">
+        <span class="who mono">{{ c.case_number }}</span>
+        <span class="when">{{ c.status }}</span>
+        <p>{{ c.title }}</p>
+      </div>
+      {% endfor %}
+    {% else %}
+    <div style="color:var(--text-faint); font-size:13.5px;">No cases linked to this individual.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

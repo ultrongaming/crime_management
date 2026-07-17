@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Officers{% endblock %}
+{% block content %}
+<div class="topbar">
+  <div>
+    <h1>Officers</h1>
+    <div class="desc">Accounts with access to the case management system.</div>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('new_officer') }}">+ New account</a>
+</div>
+
+<div class="card" style="padding:0;">
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Badge #</th><th>Department</th><th>Role</th><th>Open cases</th></tr>
+    </thead>
+    <tbody>
+      {% for o in officers %}
+      <tr>
+        <td>{{ o.full_name }}</td>
+        <td class="mono">{{ o.badge_no }}</td>
+        <td>{{ o.department }}</td>
+        <td style="text-transform:capitalize;">{{ o.role }}</td>
+        <td>{{ o.cases|selectattr('status', 'ne', 'Closed')|list|length }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

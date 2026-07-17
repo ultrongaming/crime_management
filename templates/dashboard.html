@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="topbar">
+  <div>
+    <h1>Dashboard</h1>
+    <div class="desc">Overview of active case load and records on file.</div>
+  </div>
+  <div style="display:flex; gap:10px;">
+    <a class="btn btn-primary" href="{{ url_for('new_case') }}">+ File new case</a>
+    <a class="btn" href="{{ url_for('new_criminal') }}">+ New record</a>
+  </div>
+</div>
+
+<div class="stat-grid">
+  <div class="stat" style="--stat-color: var(--amber);">
+    <div class="num">{{ stats.open_cases }}</div>
+    <div class="label">Open cases</div>
+  </div>
+  <div class="stat" style="--stat-color: var(--blue);">
+    <div class="num">{{ stats.investigating }}</div>
+    <div class="label">Under investigation</div>
+  </div>
+  <div class="stat" style="--stat-color: var(--teal);">
+    <div class="num">{{ stats.closed_cases }}</div>
+    <div class="label">Closed cases</div>
+  </div>
+  <div class="stat" style="--stat-color: var(--red);">
+    <div class="num">{{ stats.wanted }}</div>
+    <div class="label">Wanted individuals</div>
+  </div>
+</div>
+
+<div class="detail-grid">
+  <div class="card">
+    <div class="eyebrow" style="margin-bottom:12px;">Recently filed</div>
+    {% if recent_cases %}
+    <table>
+      <thead>
+        <tr><th>Case #</th><th>Title</th><th>Type</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        {% for c in recent_cases %}
+        <tr class="row-link" onclick="location.href='{{ url_for('case_detail', case_id=c.id) }}'">
+          <td class="mono">{{ c.case_number }}</td>
+          <td>{{ c.title }}</td>
+          <td>{{ c.crime_type }}</td>
+          <td>
+            <span class="stamp stamp-{{ c.status|lower|replace(' ', '-') }}">{{ c.status }}</span>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+      <div class="big">No cases on file yet</div>
+      File the first case to start tracking it here.
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <div class="eyebrow" style="margin-bottom:12px;">Wanted — active alerts</div>
+    {% if recent_wanted %}
+      {% for w in recent_wanted %}
+      <div class="note" style="cursor:pointer;" onclick="location.href='{{ url_for('criminal_detail', criminal_id=w.id) }}'">
+        <span class="who">{{ w.full_name }}</span>
+        <span class="when">{{ w.age or '—' }} yrs</span>
+        <p>{{ w.address or "No fixed address on file." }}</p>
+      </div>
+      {% endfor %}
+    {% else %}
+    <div class="empty-state" style="padding:30px 10px;">No active wanted alerts.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Case Management{% endblock %} · Precinct Records</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="sidebar__brand">
+        <div class="mark">CR</div>
+        <div class="title">Precinct Records</div>
+        <div class="sub">Case Management System</div>
+      </div>
+      <ul class="tabs">
+        <li><a class="tab {{ 'active' if request.endpoint=='dashboard' }}" href="{{ url_for('dashboard') }}"><span class="icon">▤</span> Dashboard</a></li>
+        <li><a class="tab {{ 'active' if request.endpoint in ['cases','case_detail','new_case','edit_case'] }}" href="{{ url_for('cases') }}"><span class="icon">▥</span> Case Files</a></li>
+        <li><a class="tab {{ 'active' if request.endpoint in ['criminals','criminal_detail','new_criminal','edit_criminal'] }}" href="{{ url_for('criminals') }}"><span class="icon">◆</span> Records</a></li>
+        {% if current_user.is_authenticated and current_user.is_admin %}
+        <li><a class="tab {{ 'active' if request.endpoint in ['officers','new_officer'] }}" href="{{ url_for('officers') }}"><span class="icon">☖</span> Officers</a></li>
+        {% endif %}
+      </ul>
+      {% if current_user.is_authenticated %}
+      <div class="sidebar__foot">
+        <div class="who">{{ current_user.full_name }}</div>
+        <div class="role">{{ current_user.role }} · {{ current_user.badge_no }}</div>
+        <a class="signout" href="{{ url_for('logout') }}">Sign out →</a>
+      </div>
+      {% endif %}
+    </aside>
+    <main class="main">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>

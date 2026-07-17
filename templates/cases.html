@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Case Files{% endblock %}
+{% block content %}
+<div class="topbar">
+  <div>
+    <h1>Case Files</h1>
+    <div class="desc">{{ cases|length }} case{{ '' if cases|length == 1 else 's' }} on file.</div>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('new_case') }}">+ File new case</a>
+</div>
+
+<form class="toolbar" method="GET">
+  <input type="text" name="q" placeholder="Search title, case #, or type…" value="{{ q }}">
+  <select name="status">
+    <option value="">All statuses</option>
+    {% for s in ['Open', 'Under Investigation', 'Closed', 'Cold'] %}
+    <option value="{{ s }}" {{ 'selected' if status == s }}>{{ s }}</option>
+    {% endfor %}
+  </select>
+  <button class="btn" type="submit">Filter</button>
+  {% if q or status %}<a class="btn btn-ghost" href="{{ url_for('cases') }}">Clear</a>{% endif %}
+</form>
+
+<div class="card" style="padding:0;">
+  {% if cases %}
+  <table>
+    <thead>
+      <tr><th>Case #</th><th>Title</th><th>Type</th><th>Priority</th><th>Officer</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      {% for c in cases %}
+      <tr class="row-link" onclick="location.href='{{ url_for('case_detail', case_id=c.id) }}'">
+        <td class="mono">{{ c.case_number }}</td>
+        <td>{{ c.title }}</td>
+        <td>{{ c.crime_type }}</td>
+        <td><span class="priority-dot priority-{{ c.priority }}"></span>{{ c.priority }}</td>
+        <td>{{ c.officer_name or '—' }}</td>
+        <td><span class="stamp stamp-{{ c.status|lower|replace(' ', '-') }}">{{ c.status }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">
+    <div class="big">No matching cases</div>
+    Try a different search term or file a new case.
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

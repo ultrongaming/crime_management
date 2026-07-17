@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ case.case_number }}{% endblock %}
+{% block content %}
+<div class="detail-head">
+  <div>
+    <div class="eyebrow mono">{{ case.case_number }}</div>
+    <h1>{{ case.title }}</h1>
+    <span class="stamp stamp-{{ case.status|slug }}">{{ case.status }}</span>
+  </div>
+  <div style="display:flex; gap:10px;">
+    <a class="btn" href="{{ url_for('edit_case', case_id=case.id) }}">Edit case</a>
+    <form method="POST" action="{{ url_for('delete_case', case_id=case.id) }}" onsubmit="return confirm('Delete this case file permanently?');">
+      <button class="btn btn-danger" type="submit">Delete</button>
+    </form>
+  </div>
+</div>
+
+<div class="detail-grid">
+  <div>
+    <div class="card">
+      <div class="eyebrow" style="margin-bottom:10px;">Summary</div>
+      <p style="color:var(--text-muted); font-size:14px; line-height:1.6;">{{ case.description or "No description on file." }}</p>
+      <div class="meta-list" style="margin-top:16px;">
+        <div><div class="k">Crime type</div><div class="v">{{ case.crime_type }}</div></div>
+        <div><div class="k">Priority</div><div class="v"><span class="priority-dot priority-{{ case.priority }}"></span>{{ case.priority }}</div></div>
+        <div><div class="k">Location</div><div class="v">{{ case.location or '—' }}</div></div>
+        <div><div class="k">Date reported</div><div class="v">{{ case.date_reported }}</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow" style="margin-bottom:10px;">Investigation notes</div>
+      {% for note in notes %}
+      <div class="note">
+        <span class="who">{{ note.author }}</span>
+        <span class="when">{{ note.created_at }}</span>
+        <p>{{ note.content }}</p>
+      </div>
+      {% else %}
+      <div style="color:var(--text-faint); font-size:13.5px;">No notes logged yet.</div>
+      {% endfor %}
+      <form method="POST" action="{{ url_for('add_note', case_id=case.id) }}" style="margin-top:16px;">
+        <div class="field">
+          <label for="content">Add a note</label>
+          <textarea id="content" name="content" placeholder="Log an update to the case file…" required></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Add note</button>
+      </form>
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <div class="eyebrow" style="margin-bottom:10px;">Assigned officer</div>
+      {% if officer %}
+      <div style="font-size:15px; font-weight:600;">{{ officer.full_name }}</div>
+      <div class="mono" style="color:var(--text-faint); font-size:12px;">{{ officer.badge_no }} · {{ officer.department }}</div>
+      {% else %}
+      <div style="color:var(--text-faint);">Unassigned</div>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <div class="eyebrow" style="margin-bottom:10px;">Linked record</div>
+      {% if criminal %}
+      <a href="{{ url_for('criminal_detail', criminal_id=criminal.id) }}" style="font-size:15px; font-weight:600; color:var(--amber);">{{ criminal.full_name }} →</a>
+      <div style="margin-top:4px;"><span class="stamp stamp-{{ criminal.status|slug }}">{{ criminal.status }}</span></div>
+      {% else %}
+      <div style="color:var(--text-faint);">No individual linked to this case.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
